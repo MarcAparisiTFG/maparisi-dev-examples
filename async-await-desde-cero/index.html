@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Mi cuenta</title>
+  <style>
+    body { font: 18px system-ui; max-width: 560px; margin: 40px auto; }
+    button { font: inherit; padding: 8px 16px; margin-right: 8px; }
+    #reloj { font: 32px ui-monospace, monospace; margin: 16px 0; }
+    pre { background: #f3f3f3; padding: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Mi cuenta</h1>
+  <div id="reloj">0.0 s</div>
+  <button id="fila">En fila</button>
+  <button id="vez">A la vez</button>
+  <pre id="salida"></pre>
+  <script>
+    // El reloj sigue contando mientras los await esperan: la página no se para.
+    const t0 = performance.now();
+    setInterval(() => {
+      reloj.textContent = ((performance.now() - t0) / 1000).toFixed(1) + ' s';
+    }, 100);
+
+    const pedir = (ruta) => fetch(ruta).then((r) => r.json());
+
+    async function enFila() {
+      const usuario = await pedir('/api/usuario');
+      const ofertas = await pedir('/api/ofertas');
+      return { usuario, ofertas };
+    }
+
+    async function aLaVez() {
+      const [usuario, ofertas] = await Promise.all([
+        pedir('/api/usuario'),
+        pedir('/api/ofertas'),
+      ]);
+      return { usuario, ofertas };
+    }
+
+    async function medir(nombre, fn) {
+      const inicio = performance.now();
+      await fn();
+      const s = ((performance.now() - inicio) / 1000).toFixed(2);
+      salida.textContent += `${nombre}: ${s} s\n`;
+    }
+
+    fila.onclick = () => medir('En fila', enFila);
+    vez.onclick = () => medir('A la vez', aLaVez);
+  </script>
+</body>
+</html>

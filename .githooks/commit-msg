@@ -1,0 +1,6 @@
+#!/bin/sh
+# Los commits de este repo van firmados solo por su autor: sin líneas de coautoría ni de herramientas.
+if grep -qiE '^(co-authored-by:|.*generated with)' "$1"; then
+  echo "✋ Quita las líneas Co-Authored-By / Generated with del mensaje del commit."
+  exit 1
+fi

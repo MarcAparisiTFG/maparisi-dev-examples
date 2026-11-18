@@ -1,0 +1,19 @@
+{
+  "name": "demo-hooks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "carrito": "node carrito.mjs",
+    "prueba": "node prueba.mjs",
+    "lint": "eslint Perfil.jsx"
+  },
+  "dependencies": {
+    "jsdom": "^31.0.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "eslint": "10.15.0",
+    "eslint-plugin-react-hooks": "7.1.1"
+  }
+}

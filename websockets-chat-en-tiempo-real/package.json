@@ -1,0 +1,13 @@
+{
+  "name": "demo-websockets-chat",
+  "private": true,
+  "type": "module",
+  "description": "Demo del vídeo «WebSockets: el chat en tiempo real».",
+  "scripts": {
+    "start": "node server.mjs",
+    "medir": "node medir.mjs"
+  },
+  "dependencies": {
+    "ws": "^8.23.0"
+  }
+}

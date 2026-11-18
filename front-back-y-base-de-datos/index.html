@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Mi tienda</title>
+  <!-- FRONT. CSS: cómo se ve. -->
+  <style>
+    body { font: 18px system-ui; max-width: 480px; margin: 40px auto; }
+    button { font: inherit; padding: 10px 18px; border-radius: 8px; border: 0; background: #4c8df6; color: #fff; }
+    li { padding: 8px 0; border-bottom: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <!-- FRONT. HTML: qué hay en la página. -->
+  <h1>Mi tienda</h1>
+  <button id="ver">Mis pedidos</button>
+  <ul id="lista"></ul>
+
+  <!-- FRONT. JavaScript: qué pasa cuando haces algo. -->
+  <script>
+    ver.onclick = async () => {
+      const respuesta = await fetch('/api/pedidos'); // petición al back
+      const pedidos = await respuesta.json();
+      lista.innerHTML = pedidos
+        .map((p) => `<li>#${p.id} · ${p.producto} · ${p.total} €</li>`)
+        .join('');
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+#!/bin/sh
+# Para el commit si encuentra claves, tokens, archivos .env o datos personales.
+exec python3 scripts/buscar-secretos.py

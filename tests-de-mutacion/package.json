@@ -1,0 +1,17 @@
+{
+  "name": "carrito-mutacion",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "vitest run",
+    "cobertura": "vitest run --coverage",
+    "mutar": "stryker run",
+    "mutar:debil": "stryker run stryker.debil.config.json"
+  },
+  "devDependencies": {
+    "@stryker-mutator/core": "10.1.1",
+    "@stryker-mutator/vitest-runner": "10.1.1",
+    "@vitest/coverage-v8": "5.1.0",
+    "vitest": "5.1.0"
+  }
+}

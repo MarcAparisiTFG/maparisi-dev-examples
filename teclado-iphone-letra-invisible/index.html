@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teclado con zonas invisibles</title>
+  <style>
+    body { margin: 0; font: 17px -apple-system, system-ui, sans-serif; background: #f2f2f7; display: grid; place-items: center; min-height: 100vh; }
+    .movil { width: 390px; background: #fff; border-radius: 28px; overflow: hidden; box-shadow: 0 10px 40px #0002; }
+    .texto { padding: 24px 20px; font-size: 28px; min-height: 40px; }
+    .texto span { color: #999; }
+    .zona { position: relative; width: 390px; height: 200px; background: #d1d3d9; touch-action: none; }
+    canvas { position: absolute; inset: 0; }
+    .barra { display: flex; gap: 8px; padding: 12px 16px; align-items: center; font-size: 14px; }
+    button { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid #ccc; background: #fff; }
+  </style>
+</head>
+<body>
+  <div class="movil">
+    <div class="texto" id="texto"></div>
+    <div class="barra">
+      <label><input type="checkbox" id="ver"> Ver zonas invisibles</label>
+      <label><input type="checkbox" id="anclaOn" checked> Ancla</label>
+      <button id="borrar">Borrar</button>
+    </div>
+    <div class="zona" id="zona">
+      <canvas id="fondo" width="390" height="200"></canvas>
+      <canvas id="capa" width="390" height="200"></canvas>
+    </div>
+  </div>
+
+  <script src="teclado.js"></script>
+  <script>
+    const { teclas, teclaTocada, probabilidades } = Teclado;
+    const lista = teclas();
+    let escrito = '';
+    let ultimoToque = null;
+
+    const palabraActual = () => escrito.split(' ').pop();
+
+    function pintar() {
+      texto.innerHTML = escrito + '<span>|</span>';
+      const f = fondo.getContext('2d');
+      f.clearRect(0, 0, 390, 200);
+      if (ver.checked) {
+        // Cada píxel se pinta del color de la tecla que ganaría un toque ahí.
+        // Solo se pintan las letras probables: su zona crece por fuera de la tecla.
+        const prefijo = palabraActual();
+        const p = probabilidades(prefijo);
+        for (let y = 0; y < 200; y += 2)
+          for (let x = 0; x < 390; x += 2) {
+            const letra = teclaTocada(x, y, prefijo, lista);
+            if ((p[letra] || 0) < 0.05) continue;
+            f.fillStyle = 'rgb(255 149 0 / 0.55)';
+            f.fillRect(x, y, 2, 2);
+          }
+      }
+      const c = capa.getContext('2d');
+      c.clearRect(0, 0, 390, 200);
+      // Las teclas se ven siempre igual: lo que cambia es invisible.
+      for (const t of lista) {
+        c.fillStyle = ver.checked ? '#ffffffcc' : '#fff';
+        c.beginPath();
+        c.roundRect(t.x - t.w / 2, t.y - t.h / 2, t.w, t.h, 6);
+        c.fill();
+        c.fillStyle = '#000';
+        c.font = '22px -apple-system, system-ui';
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.fillText(t.letra, t.x, t.y + 1);
+        // El ancla: el centro de cada tecla siempre da esa letra.
+        if (ver.checked && Teclado.ANCLA > 0) {
+          c.strokeStyle = '#0a84ff';
+          c.lineWidth = 1.5;
+          c.strokeRect(t.x - Teclado.ANCLA, t.y - Teclado.ANCLA, Teclado.ANCLA * 2, Teclado.ANCLA * 2);
+        }
+      }
+      if (ultimoToque) {
+        c.fillStyle = '#ff3b30';
+        c.beginPath();
+        c.arc(ultimoToque.x, ultimoToque.y, 6, 0, Math.PI * 2);
+        c.fill();
+      }
+    }
+
+    zona.addEventListener('pointerdown', (e) => {
+      const r = zona.getBoundingClientRect();
+      ultimoToque = { x: e.clientX - r.left, y: e.clientY - r.top };
+      escrito += teclaTocada(ultimoToque.x, ultimoToque.y, palabraActual(), lista);
+      pintar();
+    });
+    ver.onchange = pintar;
+    anclaOn.onchange = () => { Teclado.ANCLA = anclaOn.checked ? 7 : 0; pintar(); };
+    borrar.onclick = () => { escrito = ''; ultimoToque = null; pintar(); };
+
+    // Para grabar: ?texto=hol empieza con «hol» ya escrito.
+    escrito = new URLSearchParams(location.search).get('texto') || '';
+    ver.checked = new URLSearchParams(location.search).has('zonas');
+    if (new URLSearchParams(location.search).has('sinancla')) { anclaOn.checked = false; Teclado.ANCLA = 0; }
+    pintar();
+  </script>
+</body>
+</html>

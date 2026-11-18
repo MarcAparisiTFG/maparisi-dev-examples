@@ -1,0 +1,1 @@
+{ "testRunner": "vitest", "reporters": ["clear-text"], "coverageAnalysis": "perTest", "mutate": ["src/carrito.js"] }

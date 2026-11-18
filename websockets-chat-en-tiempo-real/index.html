@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat de demo</title>
+<style>
+  body { font: 16px/1.4 system-ui, sans-serif; margin: 0; background: #f4f5f7; color: #1c2430; }
+  main { max-width: 420px; margin: 0 auto; padding: 16px; }
+  h1 { font-size: 18px; margin: 0 0 8px; }
+  .modos { display: flex; gap: 6px; margin-bottom: 10px; }
+  .modos button { flex: 1; padding: 8px; border: 1px solid #c9ced8; background: #fff; border-radius: 8px; cursor: pointer; font: inherit; }
+  .modos button[aria-pressed="true"] { background: #1c2430; color: #fff; border-color: #1c2430; }
+  #contador { font: 14px ui-monospace, monospace; background: #fff; border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; }
+  #chat { background: #fff; border-radius: 12px; padding: 12px; height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+  .m { max-width: 75%; padding: 6px 10px; border-radius: 14px; background: #e9ecf1; align-self: flex-start; }
+  .m.yo { background: #2f6fed; color: #fff; align-self: flex-end; }
+  form { display: flex; gap: 6px; margin-top: 10px; }
+  input { flex: 1; padding: 10px; border: 1px solid #c9ced8; border-radius: 8px; font: inherit; }
+  form button { padding: 10px 14px; border: 0; border-radius: 8px; background: #2f6fed; color: #fff; font: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Chat de demo · <span id="quien"></span></h1>
+  <div class="modos">
+    <button data-modo="polling">Polling 2 s</button>
+    <button data-modo="sse">SSE</button>
+    <button data-modo="ws">WebSocket</button>
+  </div>
+  <div id="contador">peticiones HTTP: 0</div>
+  <div id="chat"></div>
+  <form><input id="texto" placeholder="Escribe…" autocomplete="off"><button>Enviar</button></form>
+</main>
+<script>
+  // Abre la página en dos pestañas: ?yo=Marc y ?yo=Ana. Mira la pestaña Red de las DevTools.
+  const yo = new URLSearchParams(location.search).get('yo') || 'Marc';
+  document.querySelector('#quien').textContent = yo;
+  const chat = document.querySelector('#chat');
+  const contador = document.querySelector('#contador');
+  let peticiones = 0, ultimo = 0, parar = () => {}, ws = null;
+
+  function cuenta() { contador.textContent = 'peticiones HTTP: ' + (++peticiones); }
+  function pinta(m) {
+    if (m.id <= ultimo) return;
+    ultimo = m.id;
+    const d = document.createElement('div');
+    d.className = 'm' + (m.de === yo ? ' yo' : '');
+    d.textContent = m.texto;
+    chat.append(d);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  const modos = {
+    polling() {
+      const t = setInterval(async () => {
+        cuenta();
+        const r = await fetch('/mensajes?desde=' + ultimo);
+        (await r.json()).forEach(pinta);
+      }, 2000);
+      return () => clearInterval(t);
+    },
+    sse() {
+      cuenta();
+      const es = new EventSource('/eventos');
+      es.onmessage = (e) => pinta(JSON.parse(e.data));
+      return () => es.close();
+    },
+    ws() {
+      cuenta();
+      ws = new WebSocket('ws://' + location.host + '/ws');
+      ws.onmessage = (e) => pinta(JSON.parse(e.data));
+      return () => { ws.close(); ws = null; };
+    },
+  };
+
+  function elegir(modo) {
+    parar();
+    peticiones = 0;
+    contador.textContent = 'peticiones HTTP: 0';
+    document.querySelectorAll('.modos button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.modo === modo));
+    parar = modos[modo]();
+  }
+  document.querySelectorAll('.modos button').forEach((b) => (b.onclick = () => elegir(b.dataset.modo)));
+
+  document.querySelector('form').onsubmit = (e) => {
+    e.preventDefault();
+    const input = document.querySelector('#texto');
+    const texto = input.value.trim();
+    if (!texto) return;
+    input.value = '';
+    if (ws && ws.readyState === 1) {
+      ws.send(JSON.stringify({ de: yo, texto })); // por la conexión abierta: no hay petición nueva
+    } else {
+      cuenta();
+      fetch('/mensajes', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ de: yo, texto }) });
+    }
+  };
+
+  elegir(new URLSearchParams(location.search).get('modo') || 'polling');
+</script>
+</body>
+</html>

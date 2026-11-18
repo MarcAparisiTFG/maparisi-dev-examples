@@ -1,0 +1,22 @@
+# Claves: nunca se suben. Solo .env.example (con valores vacíos).
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+node_modules/
+venv/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Lo que generan los ejemplos al ejecutarlos
+*.db
+log.txt
+salida/
+prueba.json
+coverage/
+reports/
+.stryker-tmp/
