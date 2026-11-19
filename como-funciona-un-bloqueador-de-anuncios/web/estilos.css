@@ -1,0 +1,4 @@
+body { font-family: system-ui, sans-serif; max-width: 480px; margin: 40px auto; }
+img { width: 160px; }
+.ad-slot { background: #fff4c2; padding: 12px; border-radius: 8px; }
+label { display: block; margin-top: 16px; }

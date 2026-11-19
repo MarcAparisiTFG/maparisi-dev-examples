@@ -1,0 +1,7 @@
+{
+  "name": "como-funciona-un-bloqueador-de-anuncios",
+  "private": true,
+  "type": "module",
+  "scripts": {"start": "node bloquear.mjs", "web": "node servidor.mjs"},
+  "dependencies": {"puppeteer-core": "^25.13.0"}
+}

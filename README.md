@@ -33,6 +33,7 @@ El código ya está; el vídeo sale pronto.
 
 | Tema | Carpeta | Necesitas |
 | --- | --- | --- |
+| Cómo funciona un adblocker | [`como-funciona-un-bloqueador-de-anuncios`](como-funciona-un-bloqueador-de-anuncios) | Node y Chrome |
 | WebSockets: el chat en tiempo real | [`websockets-chat-en-tiempo-real`](websockets-chat-en-tiempo-real) | Node |
 | Access token y refresh token: dónde va cada uno | [`refresh-token-donde-va`](refresh-token-donde-va) | Node |
 | async y await | [`async-await-desde-cero`](async-await-desde-cero) | Node |
