@@ -1,0 +1,7 @@
+{
+  "name": "microfrontends-valen-la-pena",
+  "private": true,
+  "type": "module",
+  "scripts": {"build": "node construir.mjs", "web": "node servidor.mjs", "start": "node construir.mjs && node medir.mjs"},
+  "dependencies": {"esbuild": "^0.25.0", "puppeteer-core": "^25.13.0", "react": "19.2.8", "react-dom": "19.2.8"}
+}

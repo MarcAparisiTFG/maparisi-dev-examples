@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>MisVídeos</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #f6f7f9; color: #1f2328; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; background: #fff; border-bottom: 1px solid #dde1e6; }
+    header b { font-size: 22px; }
+    header button { font: inherit; padding: 8px 16px; border-radius: 8px; border: 1px solid #c9ced6; background: #fff; }
+    main { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; padding: 16px 24px; }
+    #comentarios { grid-column: 1; }
+    #recomendados { grid-column: 2; grid-row: 1 / span 2; }
+  </style>
+</head>
+<body>
+  <!-- La contenedora pone la cabecera y el inicio de sesión… -->
+  <header><b>MisVídeos</b><button>Iniciar sesión</button></header>
+  <main>
+    <section id="reproductor"></section>
+    <section id="recomendados"></section>
+    <section id="comentarios"></section>
+  </main>
+  <script type="module">
+    // …y solo sabe dónde está subida cada zona. La descarga mientras usas la web y la coloca en su sitio.
+    const zonas = {
+      reproductor:
+        'http://localhost:4001/reproductor.js',
+      recomendados:
+        'http://localhost:4002/recomendados.js',
+      comentarios:
+        'http://localhost:4003/comentarios.js',
+    };
+    for (const [id, url] of Object.entries(zonas)) {
+      const zona = await import(url);
+      zona.montar(document.getElementById(id));
+    }
+  </script>
+</body>
+</html>
