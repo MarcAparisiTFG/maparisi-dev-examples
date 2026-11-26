@@ -39,7 +39,7 @@ El código ya está; el vídeo sale pronto.
 | WebSockets: el chat en tiempo real | [`websockets-chat-en-tiempo-real`](websockets-chat-en-tiempo-real) | Node |
 | Access token y refresh token: dónde va cada uno | [`refresh-token-donde-va`](refresh-token-donde-va) | Node |
 | async y await | [`async-await-desde-cero`](async-await-desde-cero) | Node |
-| SSR: cuándo usarlo | [`ssr-csr-o-ssg`](ssr-csr-o-ssg) | Node |
+| SSR: cuándo usarlo (vídeo 87) | [`ssr-csr-o-ssg`](ssr-csr-o-ssg) | Node |
 | Tests de mutación | [`tests-de-mutacion`](tests-de-mutacion) | Node |
 | Front, back y base de datos | [`front-back-y-base-de-datos`](front-back-y-base-de-datos) | Node |
 

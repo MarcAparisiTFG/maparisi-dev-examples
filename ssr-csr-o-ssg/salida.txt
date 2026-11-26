@@ -1,0 +1,20 @@
+# Salida real (2026-11-26, Next 16.4.6)
+## next build
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /producto
+└ ƒ /rompe
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+## curl localhost:8795/csr
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Tienda</title></head>
+<body><div id="root"></div><script src="/app.js"></script></body></html>
+## curl localhost:3010/producto (solo el body visible)
+<main><h1>Auriculares</h1><p>59 € · quedan <!-- -->5</p><button>Comprar</button></main>
+## next start al abrir /rompe
+⨯ ReferenceError: localStorage is not defined
+    at <unknown> (.next/server/chunks/ssr/[root-of-the-server]__066k7x2fehkom._.js:1:1109) {
