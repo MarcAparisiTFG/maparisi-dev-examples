@@ -33,6 +33,7 @@ El código ya está; el vídeo sale pronto.
 
 | Tema | Carpeta | Necesitas |
 | --- | --- | --- |
+| Qué es un hashmap | [`que-es-un-hashmap`](que-es-un-hashmap) | Node |
 | Cómo funciona un adblocker | [`como-funciona-un-bloqueador-de-anuncios`](como-funciona-un-bloqueador-de-anuncios) | Node y Chrome |
 | Micro frontends: qué son y cuándo usarlos | [`microfrontends-valen-la-pena`](microfrontends-valen-la-pena) | Node y Chrome |
 | WebSockets: el chat en tiempo real | [`websockets-chat-en-tiempo-real`](websockets-chat-en-tiempo-real) | Node |
